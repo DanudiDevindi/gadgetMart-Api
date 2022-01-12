@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.dbutils.DbUtils;
 import org.springframework.stereotype.Repository;
 
@@ -42,6 +43,49 @@ public class UserRepoImpl implements UserRepo {
 	        }
 	        closeConnection();
 	        return userResponse;
+	    }
+	 
+	 @Override
+	    public UserDTO authenticateUser(String username) throws Exception {
+	        connection = DBConnection.getDBConnection().getConnection();
+	        String SQL = "select * from user_login where userName=?";
+
+	        preparedStatement = connection.prepareStatement(SQL);
+	        preparedStatement.setString(1, username);
+	        resultSet = preparedStatement.executeQuery();
+
+	        UserDTO userResponse = null;
+
+	        while (resultSet.next()) {
+	            userResponse = new UserDTO();
+	            userResponse.setUserId(resultSet.getInt(1));
+	            userResponse.setName(resultSet.getString(2));
+	            userResponse.setUserType(resultSet.getString(3));
+	            userResponse.setUserName(resultSet.getString(4));
+	            userResponse.setPassword(resultSet.getString(5));
+	            userResponse.setAddress(resultSet.getString(6));
+	            userResponse.setContact(resultSet.getString(7));
+	            userResponse.setEmail(resultSet.getString(8));
+	        }
+	        closeConnection();
+	        return userResponse;
+	    }
+	 @Override
+	    public boolean createUser(UserDTO user) throws Exception {
+	        connection = DBConnection.getDBConnection().getConnection();
+	        String SQL = "INSERT INTO user_login(name, userType , userName , password , address , contact,email) VALUES (?,?,?,?,?,?,?) ";
+
+	        preparedStatement = connection.prepareStatement(SQL);
+	        preparedStatement.setString(1, user.getName());
+	        preparedStatement.setString(2, "CUSTOMER");
+	        preparedStatement.setString(3, user.getUserName());
+	        preparedStatement.setString(4, DigestUtils.md5Hex(user.getPassword()));
+	        preparedStatement.setString(5, user.getAddress());
+	        preparedStatement.setString(6, user.getContact());
+	        preparedStatement.setString(7, user.getEmail());
+	        int i = preparedStatement.executeUpdate();
+	        closeConnection();
+	        return i > 0;
 	    }
 	
 	   private void closeConnection() {
