@@ -3,6 +3,8 @@ package com.bolton.gadgetmart_main.api.repo.impl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.dbutils.DbUtils;
@@ -115,5 +117,30 @@ public class UserRepoImpl implements UserRepo {
 	        }
 	    }
 	
+	   @Override
+	    public List<UserDTO> getAllUsers() throws Exception {
+	        connection = DBConnection.getDBConnection().getConnection();
+	        String SQL = "select * from user_login where userType='CUSTOMER' ";
+
+	        preparedStatement = connection.prepareStatement(SQL);
+	        resultSet = preparedStatement.executeQuery();
+
+	        List<UserDTO> userDTOS = new ArrayList<>();
+
+	        while (resultSet.next()) {
+	            UserDTO userResponse = new UserDTO();
+	            userResponse.setUserId(resultSet.getInt(1));
+	            userResponse.setName(resultSet.getString(2));
+	            userResponse.setUserType(resultSet.getString(3));
+	            userResponse.setUserName(resultSet.getString(4));
+	            userResponse.setAddress(resultSet.getString(6));
+	            userResponse.setContact(resultSet.getString(7));
+	            userResponse.setEmail(resultSet.getString(8));
+	            userDTOS.add(userResponse);
+	        }
+	        closeConnection();
+	        return userDTOS;
+	    }
+
 
 }

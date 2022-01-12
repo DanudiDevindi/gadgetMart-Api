@@ -29,6 +29,35 @@ public class UserController {
 	 @Autowired
 	    private UserRepo userRepo;
 	 
+	 
+	 @PatchMapping( consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	    public ResponseEntity updateUser(@RequestHeader("Authorization") String auth,@RequestBody UserDTO userDTO) {
+	        boolean isValid = new TokenValidator(userRepo).validatePublicToken(auth);
+	        if (!isValid) {
+	            return new ResponseEntity<>("Unauthorized request", HttpStatus.UNAUTHORIZED);
+	        }
+	        try {
+	            boolean updated = userRepo.updateUser(userDTO);
+	            return new ResponseEntity<>(updated, HttpStatus.OK);
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
+	    }
 	
+	 @GetMapping(value = "/getall-users",produces = MediaType.APPLICATION_JSON_VALUE)
+	    public ResponseEntity getUsers(@RequestHeader("Authorization") String auth) {
+	        boolean isValid = new TokenValidator(userRepo).validateAdminToken(auth);
+	        if (!isValid) {
+	            return new ResponseEntity<>("Unauthorized request", HttpStatus.UNAUTHORIZED);
+	        }
+	        try {
+	            List<UserDTO> allUsers = userRepo.getAllUsers();
+	            return new ResponseEntity<>(allUsers, HttpStatus.OK);
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
+	    }
 
 }

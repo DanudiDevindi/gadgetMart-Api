@@ -1,5 +1,7 @@
 package com.bolton.gadgetmart_main.api.repo;
 
+import java.util.List;
+
 import com.bolton.gadgetmart_main.api.dto.UserDTO;
 
 public interface UserRepo {
@@ -11,5 +13,7 @@ public interface UserRepo {
 	 boolean createUser(UserDTO user) throws Exception;
 
 	 boolean updateUser(UserDTO userDTO) throws Exception;
+	 
+	 List<UserDTO> getAllUsers() throws Exception;
 
 }
