@@ -10,6 +10,6 @@ public interface UserRepo {
 	 
 	 boolean createUser(UserDTO user) throws Exception;
 
-	
+	 boolean updateUser(UserDTO userDTO) throws Exception;
 
 }

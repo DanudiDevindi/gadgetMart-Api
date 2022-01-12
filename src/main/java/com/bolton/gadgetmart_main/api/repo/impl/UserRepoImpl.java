@@ -87,6 +87,23 @@ public class UserRepoImpl implements UserRepo {
 	        closeConnection();
 	        return i > 0;
 	    }
+	 
+	 @Override
+	    public boolean updateUser(UserDTO user) throws Exception {
+	        connection = DBConnection.getDBConnection().getConnection();
+	        String SQL = "update user_login set name=?, userName=? , contact=? , address=? , email=? where user_id=?";
+
+	        preparedStatement = connection.prepareStatement(SQL);
+	        preparedStatement.setString(1, user.getName());
+	        preparedStatement.setString(2, user.getEmail());
+	        preparedStatement.setString(3, user.getContact());
+	        preparedStatement.setString(4, user.getAddress());
+	        preparedStatement.setString(5, user.getEmail());
+	        preparedStatement.setInt(6, user.getUserId());
+	        int i = preparedStatement.executeUpdate();
+	        closeConnection();
+	        return i > 0;
+	    }
 	
 	   private void closeConnection() {
 	        try {
