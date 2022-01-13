@@ -30,7 +30,7 @@ public class UserController {
 	    private UserRepo userRepo;
 	 
 	 
-	 @PatchMapping( consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	 @PatchMapping(value = "/update-user", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	    public ResponseEntity updateUser(@RequestHeader("Authorization") String auth,@RequestBody UserDTO userDTO) {
 	        boolean isValid = new TokenValidator(userRepo).validatePublicToken(auth);
 	        if (!isValid) {

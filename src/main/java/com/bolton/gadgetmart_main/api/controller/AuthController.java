@@ -30,7 +30,7 @@ public class AuthController {
 	    public ResponseEntity authenticateUser(@RequestBody String requestBody) {
 	        JsonObject jsonObject = new JsonParser().parse(requestBody).getAsJsonObject();
 	        String username = jsonObject.get("username").getAsString();
-//	        String password = DigestUtils.md5Hex(jsonObject.get("password").getAsString());
+	       // String password = DigestUtils.md5Hex(jsonObject.get("password").getAsString());
 	        String password = jsonObject.get("password").getAsString();
 	        try {
 	            UserDTO user = userRepo.authenticateUser(username);
