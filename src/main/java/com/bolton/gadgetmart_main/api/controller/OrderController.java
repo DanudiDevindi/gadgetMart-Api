@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -40,6 +41,21 @@ public class OrderController {
 	        }
 	        try {
 	            boolean b = orderRepo.placeOrder(orderDTO);
+	            return new ResponseEntity<>(b, HttpStatus.OK);
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
+	    }
+	    
+	    @PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	    public ResponseEntity updateOrder(@RequestHeader("Authorization") String auth, @RequestBody OrderDTO orderDTO) {
+	        boolean isValid = new TokenValidator(userRepo).validatePublicToken(auth);
+	        if (!isValid) {
+	            return new ResponseEntity<>("Unauthorized request", HttpStatus.UNAUTHORIZED);
+	        }
+	        try {
+	            boolean b = orderRepo.updateOrder(orderDTO);
 	            return new ResponseEntity<>(b, HttpStatus.OK);
 	        } catch (Exception e) {
 	            e.printStackTrace();

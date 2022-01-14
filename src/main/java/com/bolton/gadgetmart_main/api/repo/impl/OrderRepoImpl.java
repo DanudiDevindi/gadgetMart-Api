@@ -6,13 +6,14 @@ import java.sql.ResultSet;
 import java.util.List;
 
 import org.apache.commons.dbutils.DbUtils;
+import org.springframework.stereotype.Repository;
 
 import com.bolton.gadgetmart_main.api.db.DBConnection;
 import com.bolton.gadgetmart_main.api.dto.OrderDTO;
 import com.bolton.gadgetmart_main.api.dto.OrderDetail;
 import com.bolton.gadgetmart_main.api.repo.OrderRepo;
 
-
+@Repository
 public class OrderRepoImpl implements OrderRepo {
 	
 	private static Connection connection;
@@ -72,6 +73,19 @@ public class OrderRepoImpl implements OrderRepo {
             return false;
         }
     }
+    
+    @Override
+    public boolean updateOrder(OrderDTO orderDTO) throws Exception {
+        connection = DBConnection.getDBConnection().getConnection();
+        String SQL = "update orders set status=? where order_id=?";
+        preparedStatement = connection.prepareStatement(SQL);
+        preparedStatement.setString(1, orderDTO.getStatus());
+        preparedStatement.setInt(2, orderDTO.getOrder_id());
+        int i = preparedStatement.executeUpdate();
+        closeConnection();
+        return i > 0;
+    }
+
     
     
     private void closeConnection() {
