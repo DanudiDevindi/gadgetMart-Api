@@ -3,6 +3,7 @@ package com.bolton.gadgetmart_main.api.repo.impl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.dbutils.DbUtils;
@@ -84,6 +85,66 @@ public class OrderRepoImpl implements OrderRepo {
         int i = preparedStatement.executeUpdate();
         closeConnection();
         return i > 0;
+    }
+    
+    @Override
+    public List<OrderDTO> getAllOrder(String userId) throws Exception {
+        connection = DBConnection.getDBConnection().getConnection();
+        String SQL = "select * from orders where user_id=? ";
+        preparedStatement = connection.prepareStatement(SQL);
+        preparedStatement.setString(1, userId);
+        resultSet = preparedStatement.executeQuery();
+
+        ArrayList<OrderDTO> orders = getOrders(false);
+        closeConnection();
+        return orders;
+    }
+    
+    public ArrayList<OrderDTO> getOrders(boolean status) throws Exception{
+        ArrayList<OrderDTO> orders = new ArrayList<>();
+        while (resultSet.next()) {
+
+            String SQL2 = "select * from order_detail where order_detail.order_id = ?";
+            preparedStatement = connection.prepareStatement(SQL2);
+            preparedStatement.setInt(1, resultSet.getInt(1));
+            resultSet1 = preparedStatement.executeQuery();
+
+            List<OrderDetail> orderDetails = new ArrayList<>();
+            while (resultSet1.next()) {
+                OrderDetail orderDetail = new OrderDetail();
+                orderDetail.setOrder_detail_id(resultSet1.getString(1));
+                orderDetail.setOrder_id(resultSet1.getString(2));
+                orderDetail.setName(resultSet1.getString(3));
+                orderDetail.setDescription(resultSet1.getString(4));
+                orderDetail.setImage(resultSet1.getString(5));
+                orderDetail.setPrice(resultSet1.getDouble(6));
+                orderDetail.setDeliveryCost(resultSet1.getDouble(7));
+                orderDetail.setBrand(resultSet1.getString(8));
+                orderDetail.setCategory(resultSet1.getString(9));
+                orderDetail.setDiscount(resultSet1.getInt(10));
+                orderDetail.setShop(resultSet1.getString(11));
+                orderDetail.setSoldOut(resultSet1.getBoolean(12));
+                orderDetail.setWarranty(resultSet1.getString(13));
+                orderDetail.setQty(resultSet1.getInt(14));
+                orderDetails.add(orderDetail);
+            }
+
+            OrderDTO order = new OrderDTO();
+            order.setOrder_id(resultSet.getInt(1));
+            if (status){
+                order.setName(resultSet.getString(2));
+            } else {
+                order.setUser_id(resultSet.getInt(2));
+            }
+            order.setAddress(resultSet.getString(3));
+            order.setContact(resultSet.getString(4));
+            order.setPaymentMethod(resultSet.getString(5));
+            order.setTotalCost(resultSet.getDouble(6));
+            order.setStatus(resultSet.getString(7));
+            order.setOrderDetail(orderDetails);
+            orders.add(order);
+        }
+        return orders;
     }
 
     

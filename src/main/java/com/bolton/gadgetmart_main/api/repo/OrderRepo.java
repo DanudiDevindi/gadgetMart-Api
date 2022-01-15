@@ -1,5 +1,7 @@
 package com.bolton.gadgetmart_main.api.repo;
 
+import java.util.List;
+
 import com.bolton.gadgetmart_main.api.dto.OrderDTO;
 
 public interface OrderRepo {
@@ -8,4 +10,5 @@ public interface OrderRepo {
 	
 	boolean updateOrder(OrderDTO orderDTO) throws Exception;
 
+	List<OrderDTO> getAllOrder(String userId) throws Exception;
 }
