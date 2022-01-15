@@ -147,7 +147,19 @@ public class OrderRepoImpl implements OrderRepo {
         return orders;
     }
 
-    
+    @Override
+    public List<OrderDTO> getAllOrder() throws Exception {
+        connection = DBConnection.getDBConnection().getConnection();
+        String SQL = "select o.order_id,u.name,o.address,o.contact,o.paymentMethod,o.totalCost,o.status from orders o, " +
+                "user_login u where o.user_id = u.user_id order by order_id desc ";
+        preparedStatement = connection.prepareStatement(SQL);
+        resultSet = preparedStatement.executeQuery();
+
+        ArrayList<OrderDTO> orders = getOrders(true);
+        closeConnection();
+        return orders;
+    }
+
     
     private void closeConnection() {
         try {

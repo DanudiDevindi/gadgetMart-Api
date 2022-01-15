@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,7 +35,7 @@ public class ServiceProviderController {
 	    @Autowired
 	    private ProviderRepo providerRepo;
 
-	    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	    @PostMapping(value = "/add-provider",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	    public ResponseEntity createProvider(@RequestHeader("Authorization") String auth, @RequestBody ProviderDTO providerDTO) {
 	        boolean isValid = new TokenValidator(userRepo).validateAdminToken(auth);
 	        if (!isValid) {
@@ -49,7 +50,7 @@ public class ServiceProviderController {
 	        }
 	    }
 
-	    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	    @GetMapping(value = "/all-provider",produces = MediaType.APPLICATION_JSON_VALUE)
 	    public ResponseEntity getAllProviders(@RequestHeader("Authorization") String auth) {
 	        boolean isValid = new TokenValidator(userRepo).validateAdminToken(auth);
 	        if (!isValid) {
@@ -64,7 +65,7 @@ public class ServiceProviderController {
 	        }
 	    }
 
-	    @PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	    @PatchMapping(value = "/update-provider",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	    public ResponseEntity updateProvider(@RequestHeader("Authorization") String auth, @RequestBody ProviderDTO providerDTO) {
 	        boolean isValid = new TokenValidator(userRepo).validateAdminToken(auth);
 	        if (!isValid) {
@@ -80,6 +81,7 @@ public class ServiceProviderController {
 	    }
 
 	    @PatchMapping(value = "/delete",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+//	    @DeleteMapping(value = "/delete",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	    public ResponseEntity deleteProvider(@RequestHeader("Authorization") String auth, @RequestBody ProviderDTO providerDTO) {
 	        boolean isValid = new TokenValidator(userRepo).validateAdminToken(auth);
 	        if (!isValid) {

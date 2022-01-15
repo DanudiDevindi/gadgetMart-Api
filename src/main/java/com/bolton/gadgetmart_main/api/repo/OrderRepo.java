@@ -11,4 +11,6 @@ public interface OrderRepo {
 	boolean updateOrder(OrderDTO orderDTO) throws Exception;
 
 	List<OrderDTO> getAllOrder(String userId) throws Exception;
+	
+	List<OrderDTO> getAllOrder() throws Exception;
 }
